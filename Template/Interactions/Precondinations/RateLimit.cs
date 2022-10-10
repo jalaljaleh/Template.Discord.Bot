@@ -4,6 +4,7 @@
  * Licensed under MIT (https://github.com/jalaljaleh/Template.Discord.Bot/blob/master/LICENSE.txt)
  * Original (https://github.com/jalaljaleh/Template.Discord.Bot/)
  */
+
 namespace Discord.Interactions
 {
     using System;
@@ -95,7 +96,7 @@ namespace Discord.Interactions
             }
             return Task.CompletedTask;
         }
-        public static List<RateLimitItem> GeCommandsByIdAsync(ulong id)
+        public static List<RateLimitItem> GetCommandsByIdAsync(ulong id)
         {
             return Items.GetOrAdd(id, new List<RateLimitItem>()).ToList();
         }
