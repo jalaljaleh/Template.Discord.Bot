@@ -1,8 +1,8 @@
 ﻿/*!
- * Discord Rate limit v1.0 (https://jalaljaleh.github.io/)
+ * Discord Input v1.0 (https://jalaljaleh.github.io/)
  * Copyright 2021-2022 Jalal Jaleh
  * Licensed under MIT (https://github.com/jalaljaleh/Template.Discord.Bot/blob/master/LICENSE.txt)
- * Original (https://github.com/jalaljaleh/Template.Discord.Bot/)
+ * Original (https://github.com/jalaljaleh/Template.Discord.Bot/blob/master/Template/Utilities/DiscordInput.cs)
  */
 
 namespace Template

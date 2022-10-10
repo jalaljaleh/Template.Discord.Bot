@@ -1,12 +1,13 @@
-﻿using Discord;
-
+﻿/*!
+ * Discord Template By (https://jalaljaleh.github.io/)
+ * Copyright 2021-2022 Jalal Jaleh
+ * Licensed under MIT (https://github.com/jalaljaleh/Template.Discord.Bot/blob/master/LICENSE.txt)
+ * Project Url (https://github.com/jalaljaleh/Template.Discord.Bot/)
+ */
 namespace Template.Interactions
 {
+    using Discord;
     using Discord.Interactions;
-    using Discord.WebSocket;
-    using System.ComponentModel;
-    using System.Runtime.CompilerServices;
-
 
     public class CustomInteractionModuleBase<T> : InteractionModuleBase<T> where T : class, IInteractionContext
     {
@@ -14,6 +15,6 @@ namespace Template.Interactions
         {
 
         }
-  
+
     }
 }

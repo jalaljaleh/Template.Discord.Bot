@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿/*!
+ * Discord Locale v1.5 (https://jalaljaleh.github.io/)
+ * Copyright 2021-2022 Jalal Jaleh
+ * Licensed under MIT (https://github.com/jalaljaleh/Template.Discord.Bot/blob/master/LICENSE.txt)
+ * Original (https://github.com/jalaljaleh/Template.Discord.Bot/blob/master/Template/Entities/Locale.cs)
+ */
 
 namespace Template
 {

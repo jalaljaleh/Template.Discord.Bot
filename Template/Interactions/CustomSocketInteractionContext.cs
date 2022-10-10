@@ -1,15 +1,14 @@
-﻿using Discord.Interactions;
-using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Template.Data;
-
+﻿/*!
+ * Discord Template By (https://jalaljaleh.github.io/)
+ * Copyright 2021-2022 Jalal Jaleh
+ * Licensed under MIT (https://github.com/jalaljaleh/Template.Discord.Bot/blob/master/LICENSE.txt)
+ * Project Url (https://github.com/jalaljaleh/Template.Discord.Bot/)
+ */
 namespace Template.Interactions
 {
+    using Discord.Interactions;
+    using Discord.WebSocket;
+    using Template.Data;
     public class CustomSocketInteractionContext : SocketInteractionContext
     {
         private readonly LocaleService _localeService;
