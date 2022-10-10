@@ -16,13 +16,11 @@ namespace Template.Messages
         private readonly IServiceProvider _services;
         private readonly DiscordSocketClient _discord;
         private readonly UsersService usersService;
-        private readonly QuestionsService questionsService;
         public MessageHandler(IServiceProvider services)
         {
             _services = services;
             _discord = services.GetRequiredService<DiscordSocketClient>();
             usersService = services.GetRequiredService<UsersService>();
-            questionsService = services.GetRequiredService<QuestionsService>();
 
             _discord.MessageReceived += _discord_MessageReceived;
         }
@@ -35,15 +33,7 @@ namespace Template.Messages
             if (message.Source != Discord.MessageSource.User)
                 return;
 
-            if (message.Channel.GetChannelType() is not ChannelType.DM)
-                return;
-
-            var user = await usersService.GetUserAync(message.Author.Id);
-
-            var result = await questionsService.OnUserResponse(message, user);
-            if (result) return;
-
-
+             await Task.FromResult(Task.CompletedTask);
         }
     }
 }

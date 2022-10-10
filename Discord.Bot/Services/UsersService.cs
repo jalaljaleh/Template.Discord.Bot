@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -17,36 +18,31 @@ namespace Template
         private readonly IServiceProvider _services;
         public UsersService(IServiceProvider services)
         {
-            _services = services;
             _db = services.GetRequiredService<EFContext>();
             _discord = services.GetRequiredService<DiscordSocketClient>();
+            _services = services;
         }
-        public async Task<User> GetUserAync(ulong id)
+        public async Task<User> GetOrAddAync(ulong id, bool insertNew = true)
         {
-            var user = _db.Users.FirstOrDefault(a => a.Id == id);
-            if (user is null)
+            var user = await _db.Users.FirstOrDefaultAsync(a => a.Id == id);
+            if (user is null && insertNew)
             {
                 user = new User()
                 {
                     Id = id,
                 };
-                _db.Users.Add(user);
+                await _db.Users.AddAsync(user);
                 await _db.SaveChangesAsync();
             }
-            return await Task.FromResult(user);
+            return user;
         }
-        public async Task<bool> SendMessageToUserAsync(User user, string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, AllowedMentions allowedMentions = null, MessageComponent components = null, Embed[] embeds = null)
+        public async Task<IMessage> SendMessageAsync(User user, string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, AllowedMentions allowedMentions = null, MessageComponent components = null, Embed[] embeds = null)
         {
-            IUser discordUser = await _discord.Rest.GetUserAsync(user.Id);
-            try
-            {
-                await discordUser.SendMessageAsync(text, isTTS, embed, options, allowedMentions, components, embeds);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            IUser discordUser = _discord.GetUser(user.Id) ?? await _discord.GetUserAsync(user.Id) ?? await _discord.Rest.GetUserAsync(user.Id);
+            return discordUser is null 
+                ? null 
+                : await discordUser.SendMessageAsync(text, isTTS, embed, options, allowedMentions, components, embeds);
         }
+
     }
 }

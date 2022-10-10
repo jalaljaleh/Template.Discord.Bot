@@ -15,19 +15,6 @@ namespace Template
         {
             Locales = new Dictionary<string, Locale>();
         }
-        public Locale Get(string key)
-        {
-            Locale locale;
-            if (Locales.TryGetValue(key, out Locale value))
-            {
-                locale = value;
-            }
-            else
-            {
-                locale = Locales.FirstOrDefault(a => a.Key == "en-US").Value;
-            }
-            return locale;
-        }
         public Task InitializeAsync()
         {
             var directoryPath = Directory.GetFiles(@"Resources/Locales");
@@ -42,6 +29,22 @@ namespace Template
             }
             return Task.CompletedTask;
         }
+
+        public bool TryGet(string key, out Locale locale)
+        {
+            var result = Locales.TryGetValue(key, out locale);
+            return result;
+        }
+        public Locale GetOrDefault(string key)
+        {
+            var result = TryGet(key, out Locale locale);
+
+            if (locale is null)
+                locale = Locales.FirstOrDefault(a => a.Key == "en-US").Value;
+
+            return locale;
+        }
+
     }
-   
+
 }

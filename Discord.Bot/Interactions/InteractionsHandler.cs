@@ -32,7 +32,7 @@ namespace Template
             async Task _client_Ready()
             {
                 if (Program.IsDebug())
-                    await _interactions.RegisterCommandsToGuildAsync(_config.DebugServer, true);
+                    await _interactions.RegisterCommandsToGuildAsync(Program.DebugServerId, true);
                 else
                     await _interactions.RegisterCommandsGloballyAsync(true);
             }
@@ -43,11 +43,9 @@ namespace Template
 
         private async Task _client_IntegrationCreated(SocketInteraction interaction)
         {
-            var userLocale = _localeService.Get(interaction.UserLocale);
-            var guildLocale = _localeService.Get(interaction.GuildLocale);
-            var user = await _usersService.GetUserAync(interaction.User.Id);
+            if (DiscordInput.IsFromDiscordInput(interaction)) return;
 
-            var ctx = new CustomSocketInteractionContext(_client, interaction, guildLocale, userLocale, user);
+            var ctx = new CustomSocketInteractionContext(_client, interaction, _localeService, _usersService);
             await _interactions.ExecuteCommandAsync(ctx, services);
         }
 
@@ -57,17 +55,11 @@ namespace Template
             if (result.IsSuccess)
                 return;
 
-            var stable = info.Attributes.OfType<StableMessage>().FirstOrDefault();
-
-            if (stable == null)
-            {
-                var msg = await context_.Interaction.GetOriginalResponseAsync();
-                await msg.DeleteAsync();
-            }
+            if (context_.Interaction.HasResponded)
+                await context_.Interaction.FollowupAsync(result.ErrorReason, ephemeral: true);
             else
-            {
-                await context_.Interaction.FollowupAsync("Error", ephemeral: true);
-            }
+                await context_.Interaction.RespondAsync(result.ErrorReason, ephemeral: true);
+
         }
     }
 }

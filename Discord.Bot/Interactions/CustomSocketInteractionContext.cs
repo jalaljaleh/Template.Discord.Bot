@@ -1,5 +1,6 @@
 ﻿using Discord.Interactions;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,15 +12,71 @@ namespace Template.Interactions
 {
     public class CustomSocketInteractionContext : SocketInteractionContext
     {
-        public Locale UserLocale { get; }
-        public Locale GuildLocale { get; }
-        public User BotUser { get; set; }
-        public CustomSocketInteractionContext(DiscordSocketClient client, SocketInteraction interaction, Locale guildLocale, Locale userLocale, User botUser) : base(client, interaction)
+        private readonly LocaleService _localeService;
+        private readonly UsersService _usersService;
+        public CustomSocketInteractionContext(DiscordSocketClient client, SocketInteraction interaction, LocaleService services, UsersService usersService) : base(client, interaction)
         {
-            UserLocale = userLocale;
-            GuildLocale = guildLocale;
-            BotUser = botUser;
+            _localeService = services;
+            _usersService = usersService;
         }
+
+        public object CustomData { get; set; }
+        public SocketInteraction OverridedInteraction { get; set; }
+
+        private User _botUser;
+        public User BotUser
+        {
+            get
+            {
+                if (_botUser is null)
+                {
+                    _botUser = GetBotUserAsync().Result;
+                }
+                return _botUser;
+            }
+        }
+        public async Task<User> GetBotUserAsync()
+        {
+            var user = await _usersService.GetOrAddAync(Interaction.User.Id);
+            return user;
+        }
+
+        private Locale _userLocale;
+        public Locale UserLocale
+        {
+            get
+            {
+                if (_userLocale is null)
+                {
+                    _userLocale = GetUserLocale();
+                }
+                return _userLocale;
+            }
+        }
+        public Locale GetUserLocale()
+        {
+            return _localeService.GetOrDefault(Interaction.UserLocale);
+        }
+
+
+        private Locale _guildLocale;
+        public Locale GuildLocale
+        {
+            get
+            {
+                if (_guildLocale is null)
+                {
+                    _guildLocale = GetGuildLocale();
+                }
+                return _guildLocale;
+            }
+        }
+        public Locale GetGuildLocale()
+        {
+            return _localeService.GetOrDefault(Interaction.GuildLocale);
+        }
+
+
 
     }
 }

@@ -11,6 +11,8 @@ namespace Template
 {
     public class Program
     {
+        public const ulong DebugServerId = 1026022031621369867;
+
         public static Random Random = new Random();
         static void Main(string[] args) => new Program().MainAsync().GetAwaiter().GetResult();
         public async Task MainAsync()
@@ -27,13 +29,13 @@ namespace Template
             var services = new ServiceCollection()
                 .AddSingleton(configuration)
                 .AddSingleton(discord)
+
                 .AddDbContext<EFContext>(
                 x =>
                 x.UseSqlServer(@"Data Source=.\sqlexpress;Initial catalog=BotDb;Integrated Security=True"))
 
                 .AddSingleton<LocaleService>()
                 .AddSingleton<UsersService>()
-                .AddSingleton<QuestionsService>()
 
                 .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
                 .AddSingleton<InteractionsHandler>()
@@ -51,30 +53,6 @@ namespace Template
             await Log("DiscordBotService", "Run Async");
 
             var config = _services.GetRequiredService<BotConfiguration>();
-
-            var db = _services.GetRequiredService<EFContext>();
-
-            db.Questions.Add(new Question()
-            {
-                Childern = new List<QuestionItem>()
-                {
-                    new QuestionItem()
-                    {
-                        Value = "What is your name ?",
-                    },
-                     new QuestionItem()
-                    {
-                        Value = "What is your age ?",
-                    },
-                      new QuestionItem()
-                    {
-                        Value = "what are you ?",
-                    }
-                }
-            });
-            db.SaveChanges();
-
-            _services.GetRequiredService<QuestionsService>();
 
             await _services.GetRequiredService<LocaleService>().InitializeAsync();
 
