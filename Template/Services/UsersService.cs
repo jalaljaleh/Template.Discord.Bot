@@ -24,7 +24,7 @@ namespace Template
         }
         public async Task<User> GetOrAddAync(ulong id, bool insertNew = true)
         {
-            var user = await _db.Users.FirstOrDefaultAsync(a => a.Id == id);
+            var user = await _db.Users.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
             if (user is null && insertNew)
             {
                 user = new User()
@@ -36,11 +36,15 @@ namespace Template
             }
             return user;
         }
+        public void Update(User user)
+        {
+            _db.Users.Update(user);
+        }
         public async Task<IMessage> SendMessageAsync(User user, string text = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, AllowedMentions allowedMentions = null, MessageComponent components = null, Embed[] embeds = null)
         {
             IUser discordUser = _discord.GetUser(user.Id) ?? await _discord.GetUserAsync(user.Id) ?? await _discord.Rest.GetUserAsync(user.Id);
-            return discordUser is null 
-                ? null 
+            return discordUser is null
+                ? null
                 : await discordUser.SendMessageAsync(text, isTTS, embed, options, allowedMentions, components, embeds);
         }
 

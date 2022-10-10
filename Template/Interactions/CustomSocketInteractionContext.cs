@@ -19,9 +19,9 @@ namespace Template.Interactions
             _localeService = services;
             _usersService = usersService;
         }
+        public SocketInteraction OverridedInteraction { get; set; }
 
         public object CustomData { get; set; }
-        public SocketInteraction OverridedInteraction { get; set; }
 
         private User _botUser;
         public User BotUser

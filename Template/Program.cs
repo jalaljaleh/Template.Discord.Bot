@@ -6,6 +6,8 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using global::Template.Data;
 using Microsoft.EntityFrameworkCore;
+using Template.Commands;
+using Template.Messages;
 
 namespace Template
 {
@@ -22,7 +24,7 @@ namespace Template
             var discordConfig = new DiscordSocketConfig()
             {
                 AlwaysDownloadUsers = true,
-                GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers
+                GatewayIntents = GatewayIntents.All
             };
             var discord = new DiscordSocketClient(discordConfig);
 
@@ -36,11 +38,15 @@ namespace Template
 
                 .AddSingleton<LocaleService>()
                 .AddSingleton<UsersService>()
+                .AddSingleton<GuildService>()
 
                 .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
                 .AddSingleton<InteractionsHandler>()
 
+                .AddSingleton<MessageHandler>()
                 .AddSingleton<CommandService>()
+                .AddSingleton<CommandsHandler>()
+
                 .BuildServiceProvider();
 
             await RunAsync(services);
@@ -59,7 +65,11 @@ namespace Template
             var client = _services.GetRequiredService<DiscordSocketClient>();
             client.Log += Client_Log;
 
+            _services.GetRequiredService<MessageHandler>();
+
             await _services.GetRequiredService<InteractionsHandler>().InitializeAsync();
+
+            await _services.GetRequiredService<CommandsHandler>().InitializeAsync();
 
             await client.LoginAsync(TokenType.Bot, config.Token, true);
             await client.StartAsync();

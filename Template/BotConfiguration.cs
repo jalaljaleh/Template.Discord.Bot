@@ -5,6 +5,7 @@ namespace Template
     public class BotConfiguration
     {
         public string Token { get; set; }
+        public string Prefix { get; set; }
         public static BotConfiguration GetConfiguration()
         {
             var data = File.ReadAllText(@"config.json");

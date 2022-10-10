@@ -6,6 +6,7 @@ namespace Template.Data
     public class EFContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Guild> Guilds { get; set; }
 
         public EFContext(DbContextOptions options) : base(options)
         {

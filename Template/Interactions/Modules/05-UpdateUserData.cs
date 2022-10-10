@@ -27,6 +27,7 @@ namespace Template.Interactions.Modules
         public async Task update_nickname(string nickname)
         {
             Context.BotUser.Nickname = nickname;
+            _db.Update(Context.BotUser);
             await _db.SaveChangesAsync();
 
             await RespondAsync($"Your name changed to {nickname}");

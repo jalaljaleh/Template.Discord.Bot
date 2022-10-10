@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Template.Commands;
 using Template.Data;
 
 namespace Template.Messages
@@ -15,12 +17,15 @@ namespace Template.Messages
     {
         private readonly IServiceProvider _services;
         private readonly DiscordSocketClient _discord;
-        private readonly UsersService usersService;
+        private readonly UsersService _usersService;
+        private readonly CommandsHandler _commandHandler;
+
         public MessageHandler(IServiceProvider services)
         {
             _services = services;
             _discord = services.GetRequiredService<DiscordSocketClient>();
-            usersService = services.GetRequiredService<UsersService>();
+            _usersService = services.GetRequiredService<UsersService>();
+            _commandHandler = services.GetRequiredService<CommandsHandler>();
 
             _discord.MessageReceived += _discord_MessageReceived;
         }
@@ -33,7 +38,9 @@ namespace Template.Messages
             if (message.Source != Discord.MessageSource.User)
                 return;
 
-             await Task.FromResult(Task.CompletedTask);
+            var commandResult = await _commandHandler.HandleCommand(message);
+            if (commandResult is null) return;
+
         }
     }
 }

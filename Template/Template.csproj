@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bot.Data\Template.Data.csproj" />
+    <ProjectReference Include="..\Template.Data\Template.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>
